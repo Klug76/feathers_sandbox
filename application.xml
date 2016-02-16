@@ -19,5 +19,6 @@
 		<maximizable>true</maximizable>
 		<resizable>true</resizable>
 		<renderMode>direct</renderMode>
+		<depthAndStencil>true</depthAndStencil>
 	</initialWindow>
 </application>
