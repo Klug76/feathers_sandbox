@@ -23,11 +23,5 @@ package
 		private function test1(): void
 		{
 		}
-
-		private function on_Progress(ratio:Number): void
-		{
-		}
-
-
 	}
 }
