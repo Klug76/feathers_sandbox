@@ -1,6 +1,10 @@
 package
 {
 	import feathers.controls.LayoutGroup;
+	import feathers.layout.AnchorLayout;
+	import feathers.layout.AnchorLayoutData;
+	import starling.core.Starling;
+	import starling.display.Quad;
 	import starling.events.Event;
 
 	public class Test extends LayoutGroup
@@ -22,12 +26,16 @@ package
 
 		private function test1(): void
 		{
+			var panel: LayoutGroup = new LayoutGroup();
+			panel.backgroundSkin = new Quad(1, 1, 0x00ff00);
+			panel.setSize(10, 200);
+			addChild(panel);
+			Starling.juggler.tween(panel, 3, { width: 300 } );
+			Starling.juggler.delayCall(function(): void
+			{
+				panel.backgroundSkin = new Quad(1, 1, 0x0000ff);
+			}, 3.01);
 		}
-
-		private function on_Progress(ratio:Number): void
-		{
-		}
-
 
 	}
 }
