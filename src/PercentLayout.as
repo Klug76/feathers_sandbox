@@ -14,7 +14,6 @@ package
 
 	public class PercentLayout extends EventDispatcher implements ILayout
 	{
-		protected var clip_by_parent_: Boolean;
 
 		public function PercentLayout()
 		{}
@@ -24,27 +23,12 @@ package
 			return false;
 		}
 
-		public function get clip_by_parent(): Boolean
-		{
-			return clip_by_parent_;
-		}
-
-		public function set clip_by_parent(value: Boolean): void
-		{
-			if (clip_by_parent_ == value)
-				return;
-			clip_by_parent_ = value;
-			dispatchEventWith(Event.CHANGE);
-		}
-
 		public function layout(items: Vector.<DisplayObject>, viewPortBounds: ViewPortBounds = null, result: LayoutBoundsResult = null): LayoutBoundsResult
 		{
 			var boundsX: Number			= viewPortBounds ? viewPortBounds.x : 0;
 			var boundsY: Number			= viewPortBounds ? viewPortBounds.y : 0;
 			var minWidth: Number		= viewPortBounds ? viewPortBounds.minWidth : 0;
 			var minHeight: Number		= viewPortBounds ? viewPortBounds.minHeight : 0;
-			//var maxWidth: Number		= viewPortBounds ? viewPortBounds.maxWidth : Number.POSITIVE_INFINITY;
-			//var maxHeight: Number		= viewPortBounds ? viewPortBounds.maxHeight : Number.POSITIVE_INFINITY;
 			var explicitWidth: Number	= viewPortBounds ? viewPortBounds.explicitWidth : NaN;
 			var explicitHeight: Number	= viewPortBounds ? viewPortBounds.explicitHeight : NaN;
 
@@ -74,35 +58,43 @@ package
 		{
 			//trace("place_Items ", viewPortWidth, "x", viewPortHeight);
 			var itemCount: int = items.length;
-			var percent1width: Number = viewPortWidth * 0.01;
-			var percent1height: Number = viewPortHeight * 0.01;
+			var percent1width: Number	= viewPortWidth * 0.01;
+			var percent1height: Number	= viewPortHeight * 0.01;
 			for (var i: int = 0; i < itemCount; ++i)
 			{
 				var fc: FeathersControl = items[i] as FeathersControl;
 				if (!fc)
-					continue;//:support for FeathersControls only
+					continue;
 				if(!fc.includeInLayout)
 					continue;
 				var layoutData: PercentLayoutData = fc.layoutData as PercentLayoutData;
 				if(!layoutData)
 					continue;
-				var nx: Number	= percent1width * layoutData.perc_x + layoutData.pix_x;
-				var nx2: Number	= percent1width * layoutData.perc_x2 - layoutData.pix_x2;
-				var ny: Number	= percent1height * layoutData.perc_y + layoutData.pix_y;
-				var ny2: Number	= percent1height * layoutData.perc_y2 - layoutData.pix_y2;
-				if (clip_by_parent_)
+				var nx1: Number	= percent1width * layoutData.perc_x + layoutData.pix_x;
+				var nx2: Number	= percent1width * layoutData.perc_x2 + layoutData.pix_x2;
+				var ny1: Number	= percent1height * layoutData.perc_y + layoutData.pix_y;
+				var ny2: Number	= percent1height * layoutData.perc_y2 + layoutData.pix_y2;
+				if (layoutData.clamp_by_parent)
 				{
-					nx = MathUtil.clamp(nx, 0, viewPortWidth);
-					ny = MathUtil.clamp(ny, 0, viewPortHeight);
-					nx2 = MathUtil.clamp(nx2, 0, viewPortWidth);
-					ny2 = MathUtil.clamp(ny2, 0, viewPortHeight);
+					nx1	= MathUtil.clamp(nx1, 0, viewPortWidth);
+					nx2	= MathUtil.clamp(nx2, 0, viewPortWidth);
+					ny1	= MathUtil.clamp(ny1, 0, viewPortHeight);
+					ny2	= MathUtil.clamp(ny2, 0, viewPortHeight);
 				}
-				nx += boundsX;
-				ny += boundsY;
-				nx2 += boundsX;
-				ny2 += boundsY;
-				fc.move(nx, ny);
-				fc.setSize(nx2 - nx, ny2 - ny);
+				nx1	+= boundsX;
+				nx2	+= boundsX;
+				ny1	+= boundsY;
+				ny2	+= boundsY;
+				var fmovsize: Function = layoutData.movesize_function;
+				if (!fmovsize)
+				{
+					fc.move(nx1, ny1);
+					fc.setSize(nx2 - nx1, ny2 - ny1);
+				}
+				else
+				{
+					fmovsize(fc, nx1, ny1, nx2 - nx1, ny2 - ny1);
+				}
 			}
 		}
 

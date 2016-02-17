@@ -19,17 +19,24 @@ package
 		private var pix_x2_		: Number;
 		private var pix_y2_		: Number;
 
-		public function PercentLayoutData(percx: Number = 0, percy: Number = 0, percx2: Number = 0, percy2: Number = 0,
-			pixx: Number = 0, pixy: Number = 0, pixx2: Number = NaN, pixy2: Number = NaN)
+		private var clamp_by_parent_: Boolean;
+		private var movesize_function_: Function;
+
+		public function PercentLayoutData(percX: Number = 0, percY: Number = 0, percX2: Number = 0, percY2: Number = 0,
+			pixX: Number = 0, pixY: Number = 0, pixX2: Number = NaN, pixY2: Number = NaN,
+			clampByParent: Boolean = false,
+			fmovesize: Function = null)
 		{
-			perc_x_		= percx;
-			perc_y_		= percy;
-			perc_x2_	= percx2;
-			perc_y2_	= percy2;
-			pix_x_		= pixx;
-			pix_y_		= pixy;
-			pix_x2_		= pixx2;
-			pix_y2_		= pixy2;
+			perc_x_				= percX;
+			perc_y_				= percY;
+			perc_x2_			= percX2;
+			perc_y2_			= percY2;
+			pix_x_				= pixX;
+			pix_y_				= pixY;
+			pix_x2_				= pixX2;
+			pix_y2_				= pixY2;
+			clamp_by_parent_	= clampByParent;
+			movesize_function_	= fmovesize;
 		}
 
 		public function get perc_x(): Number
@@ -133,6 +140,32 @@ package
 			if (pix_y2_ == value)
 				return;
 			pix_y2_ = value;
+			this.dispatchEventWith(Event.CHANGE);
+		}
+
+		public function get clamp_by_parent(): Boolean
+		{
+			return clamp_by_parent_;
+		}
+
+		public function set clamp_by_parent(value: Boolean): void
+		{
+			if (clamp_by_parent_ == value)
+				return;
+			clamp_by_parent_ = value;
+			dispatchEventWith(Event.CHANGE);
+		}
+
+		public function get movesize_function(): Function
+		{
+			return movesize_function_;
+		}
+
+		public function set movesize_function(value: Function): void
+		{
+			if (movesize_function_ == value)
+				return;
+			movesize_function_ = value;
 			this.dispatchEventWith(Event.CHANGE);
 		}
 

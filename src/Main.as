@@ -4,8 +4,6 @@ package
 	import feathers.system.DeviceCapabilities;
 	import feathers.utils.ScreenDensityScaleFactorManager;
 	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.geom.Rectangle;
 	import starling.core.Starling;
 	import starling.utils.SystemUtil;
 
@@ -27,8 +25,8 @@ package
 			starling_.showStats = true;
 			starling_.start();
 
-			if (SystemUtil.isDesktop)
-				DeviceCapabilities.dpi = 160;
+			//if (SystemUtil.isDesktop)
+				//DeviceCapabilities.dpi = 160;
 			scaler_ = new ScreenDensityScaleFactorManager(starling_);
 		}
 	}
