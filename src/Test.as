@@ -36,10 +36,10 @@ package
 		private function test1(): void
 		{
 			am_ = new AssetManager();
-            var app_dir: File = File.applicationDirectory;
+			var app_dir: File = File.applicationDirectory;
 
-            am_.enqueue(app_dir.resolvePath("images/scale9-pattern.png"));
-            am_.enqueue(app_dir.resolvePath("images/tile-pattern.png"));
+			am_.enqueue(app_dir.resolvePath("images/scale9-pattern.png"));
+			am_.enqueue(app_dir.resolvePath("images/tile-pattern.png"));
 			am_.loadQueue(on_Progress);
 		}
 
@@ -54,7 +54,6 @@ package
 			h = Math.floor(h / tile_size) * tile_size;
 			h += t;
 			fc.setSize(Math.max(w, t), Math.max(h, t));
-			fc.invalidate();
 		}
 
 		private function on_Progress(ratio: Number): void
@@ -87,24 +86,26 @@ package
 			layer1.backgroundSkin = skin;
 			panel_.addChild(layer1);
 
+			var tile_grid: Rectangle = new Rectangle(0, 0, tile_size, tile_size);
+
 			var layer2: LayoutGroup = new LayoutGroup();
 			layer2.layoutData = new PercentLayoutData(0, 0, 100, 100, -tile_size + corner_size, corner_size, 0, -corner_size);
 			skin = new ImageSkin(tex_tile);
-			skin.tileGrid = new Rectangle(0, 0, tile_size, tile_size);
+			skin.tileGrid = tile_grid;
 			layer2.backgroundSkin = skin;
 			panel_.addChild(layer2);
 
 			var layer3: LayoutGroup = new LayoutGroup();
 			layer3.layoutData = new PercentLayoutData(0, 0, 100, 0, corner_size, -tile_size + corner_size, -corner_size, corner_size);
 			skin = new ImageSkin(tex_tile);
-			skin.tileGrid = new Rectangle(0, 0, tile_size, tile_size);
+			skin.tileGrid = tile_grid;
 			layer3.backgroundSkin = skin;
 			panel_.addChild(layer3);
 
 			var layer4: LayoutGroup = new LayoutGroup();
 			layer4.layoutData = new PercentLayoutData(0, 100, 100, 100, corner_size, -corner_size, -corner_size, 0);
 			skin = new ImageSkin(tex_tile);
-			skin.tileGrid = new Rectangle(0, 0, tile_size, tile_size);
+			skin.tileGrid = tile_grid;
 			layer4.backgroundSkin = skin;
 			panel_.addChild(layer4);
 
