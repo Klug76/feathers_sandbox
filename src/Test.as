@@ -37,10 +37,10 @@ package
 		private function test1(): void
 		{
 			am_ = new AssetManager();
-            var app_dir: File = File.applicationDirectory;
+			var app_dir: File = File.applicationDirectory;
 
-            am_.enqueue(app_dir.resolvePath("images/scale9-pattern.png"));
-            am_.enqueue(app_dir.resolvePath("images/tile-pattern.png"));
+			am_.enqueue(app_dir.resolvePath("images/scale9-pattern.png"));
+			am_.enqueue(app_dir.resolvePath("images/tile-pattern.png"));
 			am_.loadQueue(on_Progress);
 		}
 
