@@ -18,6 +18,7 @@
   <classpaths>
     <class path="src" />
     <class path="..\lib\src" />
+    <class path="..\lib\src2" />
   </classpaths>
   <!-- Build options -->
   <build>
