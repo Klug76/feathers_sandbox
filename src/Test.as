@@ -7,6 +7,8 @@ package
 	import flash.system.System;
 	import flash.text.engine.ContentElement;
 	import flash.text.engine.ElementFormat;
+	import flash.text.engine.FontDescription;
+	import flash.text.engine.FontWeight;
 	import flash.text.engine.GraphicElement;
 	import flash.text.engine.GroupElement;
 	import flash.text.engine.TextElement;
@@ -33,31 +35,27 @@ package
 
 		private function test1(): void
 		{
-			var arr: Array = [];
-			arr.length = 25;
-			var s: String = arr.join("W") + "\n";
 			var r: TextBlockTextRenderer = new TextBlockTextRenderer();
-			var ef: ElementFormat = new ElementFormat(null, 64);
+			var fd: FontDescription = new FontDescription("Arial", FontWeight.BOLD);
+			var ef: ElementFormat = new ElementFormat(fd, 32);
 			r.elementFormat = ef;
-			r.textAlign = TextBlockTextRenderer.TEXT_ALIGN_RIGHT;
-			//r.wordWrap = true;
-			//r.text = s;
-			var shape: Shape = new Shape();
-			shape.graphics.beginFill(0xff0000);
-			shape.graphics.drawCircle(30, 30, 30);
-			shape.graphics.endFill();
-			var ge: GraphicElement = new GraphicElement(shape, shape.width, shape.height, ef);
+
 			var v: Vector.<ContentElement> = new Vector.<ContentElement>();
-			v.push(ge);
-			var te: TextElement = new TextElement(s, ef);
+
+			var ef_blue: ElementFormat = ef.clone();
+			ef_blue.color = 0x0000c0;
+			var te: TextElement = new TextElement("One ", ef_blue);
 			v.push(te);
-			te = new TextElement(s, ef);
+			te = new TextElement("and ", ef);
+			v.push(te);
+			var ef_green: ElementFormat = ef.clone();
+			ef_green.color = 0x00c000;
+			te = new TextElement("Two", ef_green);
 			v.push(te);
 			r.content = new GroupElement(v);
 			r.move(100, 100);
 			//r.setSize(500, 300);
 			addChild(r);
-			trace(System.totalMemoryNumber);
 		}
 	}
 }
