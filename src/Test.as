@@ -34,8 +34,8 @@ package
 		private function test1(): void
 		{
 			var arr: Array = [];
-			arr.length = 25;
-			var s: String = arr.join("W") + "\n";
+			arr.length = 5;
+			var s: String = arr.join("Wa") + "\n";
 			var r: TextBlockTextRenderer = new TextBlockTextRenderer();
 			var ef: ElementFormat = new ElementFormat(null, 64);
 			r.elementFormat = ef;
@@ -44,15 +44,19 @@ package
 			//r.text = s;
 			var shape: Shape = new Shape();
 			shape.graphics.beginFill(0xff0000);
-			shape.graphics.drawCircle(30, 30, 30);
+			shape.graphics.drawCircle(40.2, 30.5, 30.7);
 			shape.graphics.endFill();
 			var ge: GraphicElement = new GraphicElement(shape, shape.width, shape.height, ef);
 			var v: Vector.<ContentElement> = new Vector.<ContentElement>();
-			v.push(ge);
 			var te: TextElement = new TextElement(s, ef);
 			v.push(te);
 			te = new TextElement(s, ef);
 			v.push(te);
+			te = new TextElement("foo", ef);
+			v.push(te);
+			v.push(ge);
+			te = new TextElement("foo", ef);
+			v.push(te);			
 			r.content = new GroupElement(v);
 			r.move(100, 100);
 			//r.setSize(500, 300);
