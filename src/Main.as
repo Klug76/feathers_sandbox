@@ -13,6 +13,7 @@ package
 	{
 		private var axe_: AxeContext;
 		private var starling_: Starling;
+		private var scene_3d_: Scene3d;
 		private var scaler_: ScreenDensityScaleFactorManager;
 
 		public function Main()
@@ -21,11 +22,17 @@ package
 			trace("Feathers ver=" + FEATHERS_VERSION);
 
 			axe_ = new AxeContext();
-			axe_.init(stage);
+			axe_.init(stage, on_Context_Create);
 
 			stage.addEventListener(Event.RESIZE, on_Resize_Stage);
 			stage.addEventListener(Event.ENTER_FRAME, on_Enter_Frame_Stage);
 			NativeApplication.nativeApplication.addEventListener(Event.EXITING, on_Exiting);
+		}
+//.............................................................................
+		private function on_Context_Create(): void
+		{
+			init_Starling();
+			init_Scene3d();
 		}
 //.............................................................................
 		private function on_Exiting(e: Event) : void
@@ -48,22 +55,22 @@ package
 			if (!axe_.frame_begin())
 				return;
 			//:scene 3d
-			//if (scene_3d_ != null)
-				//scene_3d_.next_Frame();
+			if (scene_3d_ != null)
+				scene_3d_.next_Frame();
 
 			axe_.frame_handover();
 
 			//:Starling
 			if (starling_ != null)
 				starling_.nextFrame();
-			else
-				init_Starling();
 
 			axe_.frame_end();
 		}
 //.............................................................................
 		private function init_Starling(): void
 		{
+			if (starling_ != null)
+				return;
 			starling_ = new Starling(Test, stage, null, axe_.stage3d);
 			starling_.shareContext = true;
 			starling_.supportHighResolutions = true;
@@ -72,11 +79,16 @@ package
 			starling_.start();
 
 			if (SystemUtil.isDesktop)
-				DeviceCapabilities.dpi = 160;
+				DeviceCapabilities.dpi = 320;
 			scaler_ = new ScreenDensityScaleFactorManager(starling_);
-
 		}
 //.............................................................................
+		private function init_Scene3d(): void
+		{
+			if (null == scene_3d_)
+				scene_3d_ = new Scene3d();
+			scene_3d_.on_Create(axe_);
+		}
 //.............................................................................
 	}
 }

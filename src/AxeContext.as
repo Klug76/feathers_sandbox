@@ -14,6 +14,8 @@ package
 //:________________________________________________________________________________________________
 	public class AxeContext
 	{
+		static private const clear_color_: uint = 0x223344;
+
 		private var debug_out_				: Boolean = true;
 		private var	is_ready_				: Boolean = false;
 		private var	is_lost_				: Boolean = false;
@@ -32,7 +34,7 @@ package
 		private var	aniti_alias_			: int = 0;			//: back buffer property
 		private var	enable_depth_n_stencil_	: Boolean = true;	//: back buffer property
 
-		private const clear_color_			: uint = 0x223344;
+		private var on_create_: Function;
 //.............................................................................
 		public function AxeContext(): void
 		{}
@@ -48,8 +50,9 @@ package
 		public function get stage3d()	: Stage3D	{ return stage3d_; }
 		public function get context3d()	: Context3D	{ return context3d_; }
 //.............................................................................
-		public function init(stage : Stage, profile: String = "baseline") : void
+		public function init(stage: Stage, onCreate: Function, profile: String = "baseline") : void
 		{
+			on_create_ = onCreate;
 			stage_ = stage;
 			stage3d_ = stage.stage3Ds[0];//TODO review (see minko 3d engine)
 			stage3d_.addEventListener(Event.CONTEXT3D_CREATE, on_Context3d_Created);
@@ -83,6 +86,8 @@ package
 			{
 				context3d_.enableErrorChecking = true;
 			}
+			if (on_create_ != null)
+				on_create_();
 		}
 //.............................................................................
 		private function on_Context3d_Error(e: ErrorEvent): void
