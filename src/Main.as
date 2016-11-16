@@ -54,6 +54,11 @@ package
 		{
 			if (!axe_.frame_begin())
 				return;
+			if (starling_ != null)
+				starling_.painter.clear(stage.color & 0xFFFFFF);
+			else
+				axe_.clear();
+
 			//:scene 3d
 			if (scene_3d_ != null)
 				scene_3d_.next_Frame();

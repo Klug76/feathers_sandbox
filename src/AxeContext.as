@@ -14,8 +14,6 @@ package
 //:________________________________________________________________________________________________
 	public class AxeContext
 	{
-		static private const clear_color_: uint = 0x223344;
-
 		private var debug_out_				: Boolean = true;
 		private var	is_ready_				: Boolean = false;
 		private var	is_lost_				: Boolean = false;
@@ -174,11 +172,13 @@ package
 				return false;
 			if (!is_bbuffer_ready_)
 				configure_Back_Buffer();
-			if (!is_ready_)
-				return false;
-
-			context3d_.clear((clear_color_ & 0xFF0000) / 0xFF0000, (clear_color_ & 0xFF00) / 0xFF00, (clear_color_ & 0xFF) / 0xFF, 1, 1, 0, Context3DClearMask.ALL);
-			return true;
+			return is_ready_;
+		}
+//.............................................................................
+		public function clear() : void
+		{
+			var clear_color: uint = stage_.color;
+			context3d_.clear((clear_color & 0xFF0000) / 0xFF0000, (clear_color & 0xFF00) / 0xFF00, (clear_color & 0xFF) / 0xFF, 1, 1, 0, Context3DClearMask.ALL);
 		}
 //.............................................................................
 		public function frame_handover() : void

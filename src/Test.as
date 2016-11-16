@@ -60,7 +60,7 @@ package
 			theme_ = new MinimalMobileTheme();
 
 			var view: LayoutGroup = new LayoutGroup();
-			view.autoSizeMode = AutoSizeMode.STAGE;
+			//view.autoSizeMode = AutoSizeMode.STAGE;
 			//view.backgroundSkin = new Quad(100, 100, 0xff0000);
 
 			var button: Button = new Button();
