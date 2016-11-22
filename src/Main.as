@@ -55,7 +55,7 @@ package
 			if (!axe_.frame_begin())
 				return;
 			if (starling_ != null)
-				starling_.painter.clear(stage.color & 0xFFFFFF);
+				starling_.painter.clear(stage.color);
 			else
 				axe_.clear();
 
