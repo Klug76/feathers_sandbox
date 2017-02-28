@@ -16,17 +16,14 @@ package
 		{
 			trace("Starling ver=" + Starling.VERSION);
 			trace("Feathers ver=" + FEATHERS_VERSION);
-			starling_ = new Starling(Test, stage, null, null, "auto",
-				"baseline"
-				//"baselineConstrained"
-				);
+			starling_ = new Starling(Test, stage);
 			starling_.supportHighResolutions = true;
 			starling_.enableErrorChecking = CONFIG::debug;
 			starling_.showStats = true;
 			starling_.start();
 
 			if (SystemUtil.isDesktop)
-				DeviceCapabilities.dpi = 160;
+				DeviceCapabilities.dpi = 216;
 			scaler_ = new ScreenDensityScaleFactorManager(starling_);
 		}
 	}
