@@ -14,6 +14,7 @@ package
 
 		public function Main()
 		{
+			trace("Air ver=" + SystemUtil.version);
 			trace("Starling ver=" + Starling.VERSION);
 			trace("Feathers ver=" + FEATHERS_VERSION);
 			starling_ = new Starling(Test, stage, null, null, "auto",
