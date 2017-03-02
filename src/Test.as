@@ -34,8 +34,8 @@ package
 		private function test1(): void
 		{
 			new MetalWorksDesktopTheme();
-			css_.parseCSS("h1 { font-size: 20; font-weight: bold; color: #0000CC }");
-			css_disabled_.parseCSS("h1 { font-size: 20; color: #606060 }");
+			css_.parseCSS("h1 { font-size: 30; font-weight: bold; color: #0000CC }");
+			css_disabled_.parseCSS("h1 { font-size: 30; color: #606060 }");
 
 			var b: Button = add_Button();
 			b.label = "<h1>foo     bar</h1>";
@@ -60,23 +60,17 @@ package
 			var b: Button = new Button();
 			b.labelFactory = function(): ITextRenderer
 			{
-				var r: TextFieldTextRenderer = new TextFieldTextRenderer();
+				var r: MyTextFieldTextRenderer = new MyTextFieldTextRenderer();
 				r.condenseWhite = false;
-				//r.styleSheet = css_;
+				//r.isHTML = true;
+				r.styleSheet = css_;
+				r.disabledStyleSheet = css_disabled_;
 				return r;
 			}
-			b.defaultLabelProperties =
-			{
-				styleSheet: css_
-			};
-			b.disabledLabelProperties =//:DEPRECATION WARNING
-			{
-				styleSheet: css_disabled_
-			};
-
-			//var fmt: TextFormat = new TextFormat();
-			//fmt.color = 0x404040;
-			//b.setFontStylesForState(ButtonState.DISABLED, fmt);
+			//b.disabledLabelProperties =//:DEPRECATION WARNING
+			//{
+				//styleSheet: css_disabled_
+			//};
 			return b;
 		}
 	}
