@@ -36,7 +36,7 @@ package
 			var stateInvalid: Boolean = this.isInvalid(INVALIDATION_FLAG_STATE);
 			if(stylesInvalid || stateInvalid)
 			{
-				if ((this._styleSheet != null) && (this._disabledStyleSheet !== null))
+				if ((this._styleSheet !== null) && (this._disabledStyleSheet !== null))
 				{
 					this.textField.styleSheet = this._isEnabled ? this._styleSheet : this._disabledStyleSheet;
 				}
