@@ -1,5 +1,6 @@
 package
 {
+	import feathers.controls.AutoSizeMode;
 	import feathers.controls.LayoutGroup;
 	import starling.events.Event;
 
@@ -14,7 +15,7 @@ package
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
 
-			autoSizeMode = LayoutGroup.AUTO_SIZE_MODE_STAGE;
+			autoSizeMode = AutoSizeMode.STAGE;
 
 			test1();
 		}
