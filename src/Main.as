@@ -22,11 +22,12 @@ package
 				);
 			starling_.supportHighResolutions = true;
 			starling_.enableErrorChecking = CONFIG::debug;
-			starling_.showStats = true;
+			//starling_.showStats = true;
+			starling_.showStatsAt("left", "bottom");
 			starling_.start();
 
 			if (SystemUtil.isDesktop)
-				DeviceCapabilities.dpi = 160;
+				DeviceCapabilities.dpi = 460;
 			scaler_ = new ScreenDensityScaleFactorManager(starling_);
 		}
 	}

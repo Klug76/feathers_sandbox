@@ -6,8 +6,8 @@
     <movie input="" />
     <movie path="bin\featherssandbox.swf" />
     <movie fps="30" />
-    <movie width="800" />
-    <movie height="600" />
+    <movie width="600" />
+    <movie height="400" />
     <movie version="19" />
     <movie minorVersion="0" />
     <movie platform="AIR" />
@@ -18,6 +18,7 @@
   <classpaths>
     <class path="src" />
     <class path="..\lib\src" />
+    <class path="..\lib\src2" />
   </classpaths>
   <!-- Build options -->
   <build>
