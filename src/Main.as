@@ -22,7 +22,8 @@ package
 				);
 			starling_.supportHighResolutions = true;
 			starling_.enableErrorChecking = CONFIG::debug;
-			starling_.showStats = true;
+			//starling_.showStats = true;
+			starling_.showStats = false;
 			starling_.start();
 
 			if (SystemUtil.isDesktop)
