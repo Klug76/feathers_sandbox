@@ -18,6 +18,7 @@
   <classpaths>
     <class path="src" />
     <class path="..\lib\src" />
+    <class path="..\lib\src2" />
   </classpaths>
   <!-- Build options -->
   <build>
@@ -26,7 +27,7 @@
     <option allowSourcePathOverlap="False" />
     <option benchmark="False" />
     <option es="False" />
-    <option inline="True" />
+    <option inline="False" />
     <option locale="" />
     <option loadConfig="" />
     <option optimize="True" />
