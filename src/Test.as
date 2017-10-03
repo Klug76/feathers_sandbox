@@ -30,8 +30,7 @@ package
 
 		private function test1(): void
 		{
-			new MinimalDesktopTheme();
-			//ScrollBar
+			new MinimalDesktopTheme();//uses ScrollBar
 
 			layout = new AnchorLayout();
 
