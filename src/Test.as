@@ -55,7 +55,7 @@ package
 			text_.format.bold = true;
 			text_.format.size = 28;
 			container.addChild(text_);
-			text_.visible = false;//:!!??
+			//text_.visible = false;//:!!??
 
 			button_shimmer_container_ = new PixelMaskDisplayObject();
 			button_shimmer_image_ = new Image(Texture.fromBitmap(new ClassShimmer()));
