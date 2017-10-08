@@ -48,6 +48,7 @@ package starling.extensions.pixelmask
 			}
 
 			Starling.current.stage3D.addEventListener(Event.CONTEXT3D_CREATE, onContextCreated, false, 0, true);
+			touchable = false;
 		}
 
 		override public function dispose():void
@@ -160,7 +161,9 @@ package starling.extensions.pixelmask
 				disposeRenderTextures();
 				createRenderTextures();
 			}
-			if (_superRenderFlag || (null === _maskRenderTexture))
+			if (null === _maskRenderTexture)
+				return;
+			if (_superRenderFlag)
 			{
 				super.render(painter);
 				return;
