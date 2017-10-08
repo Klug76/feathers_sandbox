@@ -50,6 +50,7 @@ package
 
 			button_image_ = new Image(Texture.fromBitmap(new ClassButtonTexture()));
 			container.addChild(button_image_);
+			//button_image_.width = 0;
 
 			text_ = new TextField(button_image_.width, button_image_.height, "Foo");
 			text_.format.bold = true;
@@ -58,6 +59,7 @@ package
 			//text_.visible = false;//:!!??
 
 			button_shimmer_container_ = new PixelMaskDisplayObject();
+			button_shimmer_container_.isAnimated = false;
 			button_shimmer_image_ = new Image(Texture.fromBitmap(new ClassShimmer()));
 			button_shimmer_image_.alpha = 0.4;
 			button_shimmer_container_.addChild(button_shimmer_image_);
@@ -70,7 +72,8 @@ package
 			container.y = (stage.stageHeight - button_image_.height) * .5;
 			addChild(container);
 
-			fire_Shimmer();
+			if (button_shimmer_container_.isAnimated)
+				fire_Shimmer();
 
 			addEventListener(TouchEvent.TOUCH, on_Touch);
 		}
@@ -78,7 +81,11 @@ package
 		private function on_Touch(e: TouchEvent): void
 		{
 			if (e.getTouch(this, TouchPhase.ENDED) !== null)
+			{
 				text_.visible = !text_.visible;
+				//button_image_.width = 140;
+				//button_shimmer_container_.setRequiresRedraw();
+			}
 		}
 
 

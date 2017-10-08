@@ -2,8 +2,7 @@ package starling.extensions.pixelmask
 {
 	import flash.display3D.Context3DBlendFactor;
 	import flash.geom.Matrix;
-	import starling.utils.Pool;
-
+	import flash.geom.Rectangle;
 	import starling.core.Starling;
 	import starling.display.BlendMode;
 	import starling.display.DisplayObject;
@@ -12,6 +11,7 @@ package starling.extensions.pixelmask
 	import starling.events.Event;
 	import starling.rendering.Painter;
 	import starling.textures.RenderTexture;
+	import starling.utils.Pool;
 
 	public class PixelMaskDisplayObject extends DisplayObjectContainer
 	{
@@ -30,6 +30,7 @@ package starling.extensions.pixelmask
 		private var _scaleFactor:Number;
 		private var _isAnimated:Boolean = true;
 		private var _maskRendered:Boolean = false;
+		private var _needUpdateRenderTextures:Boolean = true;
 		private static var _blendModeInit:Boolean = false;
 
 		public function PixelMaskDisplayObject(scaleFactor:Number=-1, isAnimated:Boolean=true)
@@ -45,6 +46,45 @@ package starling.extensions.pixelmask
 				BlendMode.register(MASK_MODE_NORMAL, Context3DBlendFactor.ZERO, Context3DBlendFactor.SOURCE_ALPHA);
 				BlendMode.register(MASK_MODE_INVERTED, Context3DBlendFactor.ZERO, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA);
 			}
+
+			Starling.current.stage3D.addEventListener(Event.CONTEXT3D_CREATE, onContextCreated, false, 0, true);
+		}
+
+		override public function dispose():void
+		{
+			disposeRenderTextures();
+			_mask = null;
+			Starling.current.stage3D.removeEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
+			super.dispose();
+		}
+
+		private function disposeRenderTextures(): void
+		{
+			if (_maskRenderTexture !== null)
+			{
+				_maskRenderTexture.dispose();
+				_maskRenderTexture = null;
+			}
+			if (_renderTexture !== null)
+			{
+				_renderTexture.dispose();
+				_renderTexture = null;
+			}
+			if (_image !== null)
+ 			{
+				_image.dispose();
+				_image = null;
+			}
+			if (_maskImage !== null)
+			{
+				_maskImage.dispose();
+				_maskImage = null;
+			}
+		}
+
+		private function onContextCreated(event:Object):void
+		{
+			_needUpdateRenderTextures = true;
 		}
 
 		public function get isAnimated():Boolean
@@ -54,115 +94,119 @@ package starling.extensions.pixelmask
 
 		public function set isAnimated(value:Boolean):void
 		{
+			if (_isAnimated === value)
+				return;
 			_isAnimated = value;
-		}
-
-		override public function dispose():void
-		{
-			clearRenderTextures();
-			super.dispose();
+			_needUpdateRenderTextures = true;
 		}
 
 		public function get inverted():Boolean { return _inverted; }
 		public function set inverted(value:Boolean):void
 		{
+			if (_inverted === value)
+				return;
 			_inverted = value;
-			refreshRenderTextures(null);
+			_needUpdateRenderTextures = true;
 		}
 
 		public function get pixelMask():DisplayObject { return _mask; }
 		public function set pixelMask(value:DisplayObject):void
 		{
+			if (_mask === value)
+				return;
 			_mask = value;
-
-			if (value)
-			{
-				if (_mask.width == 0 || _mask.height == 0)
-					throw new Error ("Mask must have dimensions. Current dimensions are " +
-						_mask.width + "x" + _mask.height + ".");
-
-				refreshRenderTextures(null);
-			}
-			else
-			{
-				clearRenderTextures();
-			}
+			_needUpdateRenderTextures = true;
 		}
 
-		private function clearRenderTextures() : void
+		private function createRenderTextures():void
 		{
-			if (_maskRenderTexture)	_maskRenderTexture.dispose();
-			if (_renderTexture) 	_renderTexture.dispose();
-			if (_image) 			_image.dispose();
-			if (_maskImage) 		_maskImage.dispose();
-		}
-
-		private function refreshRenderTextures(e:Event=null):void
-		{
-			if (_mask)
+			if (_mask !== null)
 			{
-				clearRenderTextures();
+				var bounds:Rectangle = Pool.getRectangle();
+				_mask.getBounds(null, bounds);
+				var maskWidth:int = Math.ceil(bounds.width);
+				var maskHeight:int = Math.ceil(bounds.height);
+				Pool.putRectangle(bounds);
 
-				_maskRenderTexture = new RenderTexture(_mask.width, _mask.height, false, _scaleFactor);
-				_renderTexture = new RenderTexture(_mask.width, _mask.height, false, _scaleFactor);
+				if ((maskWidth > 0) && (maskHeight > 0))
+				{
+					_maskRenderTexture = new RenderTexture(maskWidth, maskHeight, false, _scaleFactor);
+					_renderTexture = new RenderTexture(maskWidth, maskHeight,
+						!_isAnimated,//:bugfix: (if the texture is persistent, its contents remains intact after each draw call)
+						_scaleFactor);
 
-				// create image with the new render texture
-				_image = new Image(_renderTexture);
+					// create image with the result texture
+					_image = new Image(_renderTexture);
 
-				// create image to blit the mask onto
-				_maskImage = new Image(_maskRenderTexture);
+					// create image to blit the mask onto
+					_maskImage = new Image(_maskRenderTexture);
 
-				// set the blending mode to MASK (ZERO, SRC_ALPHA)
-				if (_inverted)
-					_maskImage.blendMode = MASK_MODE_INVERTED;
-				else
-					_maskImage.blendMode = MASK_MODE_NORMAL;
+					if (_inverted)
+						_maskImage.blendMode = MASK_MODE_INVERTED;
+					else
+						_maskImage.blendMode = MASK_MODE_NORMAL;
+				}
 			}
-
 			_maskRendered = false;
 		}
 
 		public override function render(painter:Painter):void
 		{
-			if (_isAnimated || (!_isAnimated && !_maskRendered))
+			if (_mask !== null)
+				testMaskResize();
+			if (_needUpdateRenderTextures)
 			{
-				if (_superRenderFlag || !_mask)
-				{
-					super.render(painter);
-				}
-				else
-				{
-					if (_mask)
-					{
-						painter.finishMeshBatch();
-						painter.excludeFromCache(this);
+				_needUpdateRenderTextures = false;
+				disposeRenderTextures();
+				createRenderTextures();
+			}
+			if (_superRenderFlag || (null === _maskRenderTexture))
+			{
+				super.render(painter);
+				return;
+			}
+			if (_isAnimated || !_maskRendered)
+			{
+				_maskRendered = true;
+				painter.finishMeshBatch();
+				painter.excludeFromCache(this);
 
-						drawNoTransform(_maskRenderTexture, _mask);
-						_renderTexture.drawBundled(drawRenderTextures);
-						_image.render(painter);
-						_maskRendered = true;
-					}
-				}
+				drawNoTransform(_maskRenderTexture, _mask);
+				_renderTexture.drawBundled(drawRenderTextures);
 			}
-			else if (_image)
+			this.transformationMatrix.copyFrom(_mask.transformationMatrix);
+			_image.render(painter);//:paint result texture
+		}
+
+		private function testMaskResize(): void
+		{
+			var bounds:Rectangle = Pool.getRectangle();
+			_mask.getBounds(null, bounds);
+			var maskWidth:int = Math.ceil(bounds.width);
+			var maskHeight:int = Math.ceil(bounds.height);
+			Pool.putRectangle(bounds);
+			if (null === _maskRenderTexture)
 			{
-				_image.render(painter);
+				if ((maskWidth > 0) && (maskHeight > 0))
+					_needUpdateRenderTextures = true;
+				return;
 			}
+			if ((_maskRenderTexture.width < maskWidth) || (_maskRenderTexture.height < maskHeight))
+				_needUpdateRenderTextures = true;
 		}
 
 		private function drawRenderTextures():void
 		{
 			_superRenderFlag = true;
 			drawNoTransform(_renderTexture, this);
-			_renderTexture.draw(this);
 			_superRenderFlag = false;
 
 			_renderTexture.draw(_maskImage);
 		}
 
-		private function drawNoTransform(renderTexture: RenderTexture, od: DisplayObject): void
+		private function drawNoTransform(renderTexture:RenderTexture, od:DisplayObject): void
 		{
-			var m: Matrix = Pool.getMatrix();
+			var m:Matrix = Pool.getMatrix();
 			renderTexture.draw(od, m);
 			Pool.putMatrix(m);
 		}
