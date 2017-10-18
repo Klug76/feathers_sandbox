@@ -162,7 +162,11 @@ package starling.extensions.pixelmask
 				createRenderTextures();
 			}
 			if (null === _maskRenderTexture)
+			{
+				if (null === _mask)
+					super.render(painter);//:debug preview!?
 				return;
+			}
 			if (_superRenderFlag)
 			{
 				super.render(painter);
